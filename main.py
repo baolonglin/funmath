@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget
 from PyQt5.QtCore import QCoreApplication
 
 class Example(QWidget):
@@ -12,15 +12,24 @@ class Example(QWidget):
         self.initUI()
 
     def initUI(self):
+
+        
         qbtn = QPushButton('Quit', self)
         qbtn.clicked.connect(QCoreApplication.instance().quit)
         qbtn.resize(qbtn.sizeHint())
         qbtn.setToolTip('This is a <b>QPushButton</b> widget')
         qbtn.move(50, 50)
-
-        self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('Quit button')
+        
+        self.resize(250, 150)
+        self.center()
+        self.setWindowTitle('Example')
         self.show()
+
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Message',
