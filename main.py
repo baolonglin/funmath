@@ -46,7 +46,8 @@ class Example(QMainWindow):
         self.show()
 
     def copy(self):
-        pass
+        sender = self.sender()
+        self.statusBar().showMessage(sender.text() + " was pressed")
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
