@@ -2,9 +2,12 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QMainWindow, QAction, qApp
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, pyqtSignal, QObject
 from PyQt5.QtGui import QIcon
 
+class Communicate(QObject):
+    closeApp = pyqtSignal()
+    
 class Example(QMainWindow):
 
     def __init__(self):
@@ -38,6 +41,9 @@ class Example(QMainWindow):
 
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exitAction)
+
+        self.c = Communicate()
+        self.c.closeApp.connect(self.close)
         
         self.statusBar().showMessage('Ready')
         self.resize(500, 300)
@@ -52,7 +58,10 @@ class Example(QMainWindow):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.close()
-            
+
+    def mousePressEvent(self, event):
+        self.c.closeApp.emit()
+        
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
