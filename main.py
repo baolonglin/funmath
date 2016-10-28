@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 from PyQt5.QtCore import QCoreApplication
 
 class Example(QWidget):
@@ -21,7 +21,15 @@ class Example(QWidget):
         self.setGeometry(300, 300, 250, 150)
         self.setWindowTitle('Quit button')
         self.show()
-        
+
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, 'Message',
+                                     "Are you sure to quit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
