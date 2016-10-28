@@ -35,9 +35,12 @@ class Example(QMainWindow):
         fileMenu.addAction(exitAction)
         editMenu = menubar.addMenu('&Edit')
         editMenu.addAction(copyAction)
+
+        toolbar = self.addToolBar('Exit')
+        toolbar.addAction(exitAction)
         
         self.statusBar().showMessage('Ready')
-        self.resize(250, 150)
+        self.resize(500, 300)
         self.center()
         self.setWindowTitle('Example')
         self.show()
