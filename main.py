@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QMainWindow
 from PyQt5.QtCore import QCoreApplication
 
-class Example(QWidget):
+class Example(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -19,7 +19,8 @@ class Example(QWidget):
         qbtn.resize(qbtn.sizeHint())
         qbtn.setToolTip('This is a <b>QPushButton</b> widget')
         qbtn.move(50, 50)
-        
+
+        self.statusBar().showMessage('Ready')
         self.resize(250, 150)
         self.center()
         self.setWindowTitle('Example')
