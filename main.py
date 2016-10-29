@@ -3,7 +3,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDesktopWidget, \
     QMainWindow, QAction, qApp, QLabel, QCheckBox, QLineEdit, QGridLayout, \
-    QDialog
+    QDialog, QHBoxLayout
 from PyQt5.QtCore import Qt, pyqtSignal, QObject, QSettings
 from PyQt5.QtGui import QIcon
 
@@ -25,20 +25,21 @@ class Settings(QDialog):
 
         self.minEdit = QLineEdit(str(self.settings.value('min', 0)), self)
         self.maxEdit = QLineEdit(str(self.settings.value('max', 100)), self)
-        self.cbAdd = QCheckBox('+', self)
-        self.cbAdd.setCheckState(self.settings.value('op_plus', Qt.Checked))
-        self.cbMinus = QCheckBox('-', self)
-        self.cbMinus.setCheckState(self.settings.value('op_minus', Qt.Checked))
-        self.cbMulti = QCheckBox('*', self)
-        self.cbMulti.setCheckState(self.settings.value('op_multi', Qt.Unchecked))
-        self.cbDivid = QCheckBox('/', self)
-        self.cbDivid.setCheckState(self.settings.value('op_divid', Qt.Unchecked))
+        
+        self.cbAdd = QCheckBox('+')
+        self.cbAdd.setChecked(self.settings.value('op_plus', True))
+        self.cbMinus = QCheckBox('-')
+        self.cbMinus.setChecked(self.settings.value('op_minus', True))
+        self.cbMulti = QCheckBox('*')
+        self.cbMulti.setChecked(self.settings.value('op_multi', False))
+        self.cbDivid = QCheckBox('/')
+        self.cbDivid.setChecked(self.settings.value('op_divid', False))
 
-        gridOp = QGridLayout()
-        gridOp.addWidget(self.cbAdd, 1, 0)
-        gridOp.addWidget(self.cbMinus, 1, 1)
-        gridOp.addWidget(self.cbMulti, 1, 2)
-        gridOp.addWidget(self.cbDivid, 1, 3)
+        gridOp = QHBoxLayout()
+        gridOp.addWidget(self.cbAdd)
+        gridOp.addWidget(self.cbMinus)
+        gridOp.addWidget(self.cbMulti)
+        gridOp.addWidget(self.cbDivid)
 
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -63,10 +64,11 @@ class Settings(QDialog):
     def closeEvent(self, e):
         self.settings.setValue('min', int(self.minEdit.text()))
         self.settings.setValue('max', int(self.maxEdit.text()))
-        self.settings.setValue('op_plus', self.cbAdd.checkState)
-        self.settings.setValue('op_minus', self.cbMinus.checkState)
-        self.settings.setValue('op_multi', self.cbMulti.checkState)
-        self.settings.setValue('op_divid', self.cbDivid.checkState)
+
+        self.settings.setValue('op_plus', self.cbAdd.isChecked())
+        self.settings.setValue('op_minus', self.cbMinus.isChecked())
+        self.settings.setValue('op_multi', self.cbMulti.isChecked())
+        self.settings.setValue('op_divid', self.cbDivid.isChecked())
 
         super().closeEvent(e)
 
