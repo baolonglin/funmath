@@ -47,6 +47,9 @@ class QuestionGenerator:
         return self.supportedOp[
             random.randint(0, len(self.supportedOp) - 1)]
 
+    def validateQuestion(self, question):
+        pass
+
     def initQuestion(self):
         for q_idx in range(self.settings.getQuestionNum()):
             question = []

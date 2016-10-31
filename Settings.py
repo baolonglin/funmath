@@ -54,3 +54,9 @@ class Settings:
 
     def setOperatorNum(self, v):
         self.settings.setValue('op_number', v)
+
+    def isSupportNegative(self):
+        return self.settings.value('support_nagtive', False, type=bool)
+
+    def setSupportNegative(self, v):
+        self.settings.setValue('support_nagtive', v)

@@ -30,6 +30,8 @@ class SettingsDialog(QDialog):
         self.cbMulti.setChecked(self.settings.isMultiEnable())
         self.cbDivid = QCheckBox('/')
         self.cbDivid.setChecked(self.settings.isDivideEnable())
+        self.cbNegative = QCheckBox('Support Negative Result')
+        self.cbNegative.setChecked(self.settings.isSupportNegative())
 
         gridOp = QHBoxLayout()
         gridOp.addWidget(self.cbAdd)
@@ -49,6 +51,7 @@ class SettingsDialog(QDialog):
         grid.addWidget(self.questionNumberEdit, 3, 1)
         grid.addWidget(opNumLebel, 3, 2)
         grid.addWidget(self.opNumberEdit, 3, 3)
+        grid.addWidget(self.cbNegative, 4, 0, 1, 2)
         self.setLayout(grid)
 
         self.setWindowTitle('Settings')
@@ -73,4 +76,5 @@ class SettingsDialog(QDialog):
         self.settings.setQuestionNum(int(self.questionNumberEdit.text()))
         self.settings.setOperatorNum(int(self.opNumberEdit.text()))
 
+        self.settings.setSupportNegative(self.cbNegative.isChecked())
         super().closeEvent(e)
