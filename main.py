@@ -10,6 +10,7 @@ from SettingsDialog import SettingsDialog
 from Settings import Settings
 from QuestionGenerator import QuestionGenerator
 from QuestionWidget import QuestionWidget
+from ResultWidget import ResultWidget
 
 
 class Communicate(QObject):
@@ -65,10 +66,11 @@ class Main(QMainWindow):
         self.show()
 
     def stop(self):
-        if self.started:
-            self.start()
-        self.showResult()
-        self.questions = None
+        if self.questions:
+            if self.started:
+                self.start()
+            self.showResult()
+            self.questions = None
 
     def showQuestion(self, question):
         if question:
@@ -98,7 +100,7 @@ class Main(QMainWindow):
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.No)
             if reply == QMessageBox.Yes:
-                self.showResult()
+                self.stop()
 
     def prevButtonClicked(self):
         self.showQuestion(self.questions.previous(self.questionWidget.getAnswer()))
@@ -107,7 +109,7 @@ class Main(QMainWindow):
         self.showQuestion(self.questions.next(self.questionWidget.getAnswer()))
 
     def showResult(self):
-        pass
+        self.setCentralWidget(ResultWidget(self, self.questions))
 
     def hideQuestion(self):
         if self.questionWidget:

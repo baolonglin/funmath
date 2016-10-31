@@ -35,7 +35,7 @@ class QuestionGenerator:
             self.supportedOp.append(Operator.plus)
         if self.settings.isMinusEnable():
             self.supportedOp.append(Operator.minus)
-        if self.settings.isPlusEnable():
+        if self.settings.isMultiEnable():
             self.supportedOp.append(Operator.multiply)
         if self.settings.isDivideEnable():
             self.supportedOp.append(Operator.divide)
@@ -79,3 +79,17 @@ class QuestionGenerator:
             return self.curr()
         self.current_question_idx -= 1
         return None
+
+    def genReport(self):
+        report = []
+        for idx in range(len(self.generatedQuestions)):
+            question = ''
+            for item in self.generatedQuestions[idx]:
+                question += str(item)
+            answer = ''
+            if self.answers[idx] != -1:
+                answer = str(self.answers[idx])
+            correctAnswer = eval(question)
+            report.append((question, answer, str(correctAnswer)))
+        return report
+
