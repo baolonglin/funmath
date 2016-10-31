@@ -67,7 +67,7 @@ class QuestionGenerator:
     def previous(self, answer):
         self.updateCurrentQuestionAnswer(answer)
         self.current_question_idx -= 1
-        if self.current_question_idx > 0:
+        if self.current_question_idx >= 0:
             return self.curr()
         self.current_question_idx += 1
         return None

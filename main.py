@@ -2,13 +2,14 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDesktopWidget, \
-    QMainWindow, QAction, qApp, QHBoxLayout, QLabel, QLineEdit, QWidget
+    QMainWindow, QAction, qApp, QVBoxLayout, QHBoxLayout, QWidget, QPushButton
 from PyQt5.QtCore import Qt, pyqtSignal, QObject
 from PyQt5.QtGui import QIcon
 
 from SettingsDialog import SettingsDialog
 from Settings import Settings
 from QuestionGenerator import QuestionGenerator
+from QuestionWidget import QuestionWidget
 
 
 class Communicate(QObject):
@@ -23,8 +24,9 @@ class Main(QMainWindow):
         self.settings = Settings()
         self.questions = None
         self.started = False
+        self.questionWidget = None
 
-    def initUI(self):
+    def initToolbar(self):
         exitAction = QAction(QIcon('exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
@@ -36,7 +38,6 @@ class Main(QMainWindow):
         settingsAction.triggered.connect(self.settings)
 
         self.startAction = QAction(QIcon('start.png'), '&Start', self)
-        self.startAction.setShortcut(Qt.Key_Enter)
         self.startAction.setStatusTip('Start')
         self.startAction.triggered.connect(self.start)
 
@@ -50,8 +51,12 @@ class Main(QMainWindow):
         toolbar.addAction(self.startAction)
         toolbar.addAction(stopAction)
 
+    def initUI(self):
+
+        self.initToolbar()
+
         self.c = Communicate()
-        self.c.closeApp.connect(self.close)
+        #self.c.closeApp.connect(self.close)
 
         self.statusBar().showMessage('Ready')
         self.resize(800, 600)
@@ -60,30 +65,33 @@ class Main(QMainWindow):
         self.show()
 
     def stop(self):
+        if self.started:
+            self.start()
         self.showResult()
         self.questions = None
 
-    def getCurrAnswer(self):
-        t = self.answerEdit.text()
-        if t.strip().isnumeric():
-            return int(t.strip())
-        return -1
-
     def showQuestion(self, question):
         if question:
-            q = question[0]
-            a = question[1]
-            grid = QHBoxLayout()
-            for e in q:
-                grid.addWidget(QLabel(str(e)))
-            grid.addWidget(QLabel('='))
-            self.answerEdit = QLineEdit()
-            if a != -1:
-                self.answerEdit.setText(str(a))
-            grid.addWidget(self.answerEdit)
-            mainWidget = QWidget()
-            mainWidget.setLayout(grid)
-            self.setCentralWidget(mainWidget)
+            self.questionWidget = QuestionWidget(self, question)
+            layout = QVBoxLayout()
+            layout.addStretch(1)
+            layout.addWidget(self.questionWidget)
+            layout.addStretch(1)
+            cmdLayout = QHBoxLayout()
+            prevButton = QPushButton("<<")
+            prevButton.clicked.connect(self.prevButtonClicked)
+            prevButton.setFocusPolicy(Qt.NoFocus)
+            nextButton = QPushButton(">>")
+            nextButton.clicked.connect(self.nextButtonClicked)
+            nextButton.setFocusPolicy(Qt.NoFocus)
+            cmdLayout.addWidget(prevButton)
+            cmdLayout.addStretch(1)
+            cmdLayout.addWidget(nextButton)
+            layout.addLayout(cmdLayout)
+            centralWidget = QWidget()
+            centralWidget.setLayout(layout)
+            self.setCentralWidget(centralWidget)
+            self.questionWidget.setFocus()
         else:
             reply = QMessageBox.question(self, 'Message',
                                          "Do you want to submit?",
@@ -92,11 +100,20 @@ class Main(QMainWindow):
             if reply == QMessageBox.Yes:
                 self.showResult()
 
+    def prevButtonClicked(self):
+        self.showQuestion(self.questions.previous(self.questionWidget.getAnswer()))
+
+    def nextButtonClicked(self):
+        self.showQuestion(self.questions.next(self.questionWidget.getAnswer()))
+
     def showResult(self):
         pass
 
     def hideQuestion(self):
-        self.setLayout(QHBoxLayout())
+        if self.questionWidget:
+            self.questions.updateCurrentQuestionAnswer(self.questionWidget.getAnswer())
+            self.questionWidget = None
+        self.setCentralWidget(QWidget())
 
     def start(self):
         if not self.questions:
@@ -105,10 +122,12 @@ class Main(QMainWindow):
             self.showQuestion(self.questions.curr())
             self.started = True
             self.startAction.setIcon(QIcon('pause.png'))
+            self.startAction.setStatusTip('Pause')
         else:
             self.started = False
             self.hideQuestion()
             self.startAction.setIcon(QIcon('start.png'))
+            self.startAction.setStatusTip('Start')
 
     def settings(self):
         settingGui = SettingsDialog(self, self.settings)
@@ -117,10 +136,6 @@ class Main(QMainWindow):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.close()
-        elif e.key() == Qt.Key_Left:
-            self.showQuestion(self.questions.previous(self.getCurrAnswer()))
-        elif e.key() == Qt.Key_Right:
-            self.showQuestion(self.questions.next(self.getCurrAnswer()))
 
     def mousePressEvent(self, event):
         self.c.closeApp.emit()
