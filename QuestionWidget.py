@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout
 from PyQt5.QtGui import QFont
+from QuestionGenerator import Operator
 
 class QuestionWidget(QWidget):
     def __init__(self, parent, question):
@@ -9,7 +10,21 @@ class QuestionWidget(QWidget):
         self.initUI()
 
     def getNumWidget(self, n):
-        label = QLabel(str(n))
+
+        if n in Operator:
+            if n == Operator.plus:
+                text = self.tr('+')
+            elif n == Operator.minus:
+                text = self.tr('-')
+            elif n == Operator.multiply:
+                text = self.tr('*')
+            elif n == Operator.divide:
+                text = self.tr('/')
+            else:
+                text = str(n)
+        else:
+            text = str(n)
+        label = QLabel(text)
         font = QFont("Times", 14, QFont.Bold)
         label.setFont(font)
         return label

@@ -30,7 +30,7 @@ class Main(QMainWindow):
     def initToolbar(self):
         exitAction = QAction(QIcon('exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
+        exitAction.setStatusTip(self.tr('Exit application'))
         exitAction.triggered.connect(qApp.quit)
 
         settingsAction = QAction(QIcon('settings.png'), '&Settings', self)
@@ -62,7 +62,7 @@ class Main(QMainWindow):
         self.statusBar().showMessage('Ready')
         self.resize(800, 600)
         self.center()
-        self.setWindowTitle('Fun Math')
+        self.setWindowTitle(self.tr('Fun Math'))
         self.show()
 
     def stop(self):
@@ -95,8 +95,8 @@ class Main(QMainWindow):
             self.setCentralWidget(centralWidget)
             self.questionWidget.setFocus()
         else:
-            reply = QMessageBox.question(self, 'Message',
-                                         "Do you want to submit?",
+            reply = QMessageBox.question(self, self.tr('Message'),
+                                         self.tr("Do you want to submit?"),
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.No)
             if reply == QMessageBox.Yes:
@@ -149,8 +149,8 @@ class Main(QMainWindow):
         self.move(qr.topLeft())
 
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Message',
-                                     "Are you sure to quit?",
+        reply = QMessageBox.question(self, self.tr('Message'),
+                                     self.tr("Are you sure to quit?"),
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:

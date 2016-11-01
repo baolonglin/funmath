@@ -9,11 +9,11 @@ class SettingsDialog(QDialog):
         self.initUI()
 
     def initUI(self):
-        minLabel = QLabel('Min Number')
-        maxLabel = QLabel('Max Number')
-        supportOp = QLabel('Supported Operation')
-        questionLabel = QLabel('Question Number')
-        opNumLebel = QLabel('Operator number')
+        minLabel = QLabel(self.tr('Min Number'))
+        maxLabel = QLabel(self.tr('Max Number'))
+        supportOp = QLabel(self.tr('Supported Operation'))
+        questionLabel = QLabel(self.tr('Question Number'))
+        opNumLebel = QLabel(self.tr('Operator number'))
 
         self.minEdit = QLineEdit(str(self.settings.getMinNum()), self)
         self.maxEdit = QLineEdit(str(self.settings.getMaxNum()), self)
@@ -22,15 +22,15 @@ class SettingsDialog(QDialog):
         self.opNumberEdit = QLineEdit(
             str(self.settings.getOperatorNum()), self)
 
-        self.cbAdd = QCheckBox('+')
+        self.cbAdd = QCheckBox(self.tr('+'))
         self.cbAdd.setChecked(self.settings.isPlusEnable())
-        self.cbMinus = QCheckBox('-')
+        self.cbMinus = QCheckBox(self.tr('-'))
         self.cbMinus.setChecked(self.settings.isMinusEnable())
-        self.cbMulti = QCheckBox('*')
+        self.cbMulti = QCheckBox(self.tr('*'))
         self.cbMulti.setChecked(self.settings.isMultiEnable())
-        self.cbDivid = QCheckBox('/')
+        self.cbDivid = QCheckBox(self.tr('/'))
         self.cbDivid.setChecked(self.settings.isDivideEnable())
-        self.cbNegative = QCheckBox('Support Negative Result')
+        self.cbNegative = QCheckBox(self.tr('Support Negative Result'))
         self.cbNegative.setChecked(self.settings.isSupportNegative())
 
         gridOp = QHBoxLayout()
@@ -54,7 +54,7 @@ class SettingsDialog(QDialog):
         grid.addWidget(self.cbNegative, 4, 0, 1, 2)
         self.setLayout(grid)
 
-        self.setWindowTitle('Settings')
+        self.setWindowTitle(self.tr('Settings'))
         self.resize(500, 300)
         self.center()
 

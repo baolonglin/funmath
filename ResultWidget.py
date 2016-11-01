@@ -10,7 +10,7 @@ class ResultWidget(QWidget):
 
     def getScoreWidget(self, score):
         label = QLabel()
-        label.setText('Score: ' + str(score))
+        label.setText(self.tr('Score: ') + str(score))
         label.setFont(QFont("Times", 30, QFont.Bold))
         color = 'red'
         if score > 60:
@@ -24,7 +24,7 @@ class ResultWidget(QWidget):
         model = QStandardItemModel()
         model.setColumnCount(3)
         model.setRowCount(len(report))
-        model.setHorizontalHeaderLabels(['Question', 'Your answer', 'Correct answer'])
+        model.setHorizontalHeaderLabels([self.tr('Question'), self.tr('Your answer'), self.tr('Correct answer')])
         score = 0
         for idx in range(len(report)):
             (question, answer, correctAnswer) = report[idx]
