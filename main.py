@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import sys
+import sys, os
+from locale import getdefaultlocale
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDesktopWidget, \
     QMainWindow, QAction, qApp, QVBoxLayout, QHBoxLayout, QWidget, QPushButton
-from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtCore import Qt, pyqtSignal, QObject, QTranslator
 from PyQt5.QtGui import QIcon
 
 from SettingsDialog import SettingsDialog
@@ -160,5 +161,11 @@ class Main(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    locale = getdefaultlocale()
+    translator = QTranslator(app)
+
+    translator.load(os.path.join(os.path.dirname(__file__),
+                                 '%s.qm' % locale[0]))
+    app.installTranslator(translator)
     ex = Main()
     sys.exit(app.exec_())
