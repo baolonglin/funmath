@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import sys, os
+import sys
+import os
 from locale import getdefaultlocale
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDesktopWidget, \
     QMainWindow, QAction, qApp, QVBoxLayout, QHBoxLayout, QWidget, QPushButton
@@ -12,6 +13,8 @@ from Settings import Settings
 from QuestionGenerator import QuestionGenerator
 from QuestionWidget import QuestionWidget
 from ResultWidget import ResultWidget
+
+import icons_qr
 
 
 class Communicate(QObject):
@@ -29,21 +32,21 @@ class Main(QMainWindow):
         self.questionWidget = None
 
     def initToolbar(self):
-        exitAction = QAction(QIcon('exit.png'), '&Exit', self)
+        exitAction = QAction(QIcon(':/icons/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip(self.tr('Exit application'))
         exitAction.triggered.connect(qApp.quit)
 
-        settingsAction = QAction(QIcon('settings.png'), '&Settings', self)
+        settingsAction = QAction(QIcon(':/icons/settings.png'), '&Settings', self)
         settingsAction.setShortcut('Ctrl+,')
         settingsAction.setStatusTip('Change settings')
         settingsAction.triggered.connect(self.settings)
 
-        self.startAction = QAction(QIcon('start.png'), '&Start', self)
+        self.startAction = QAction(QIcon(':/icons/start.png'), '&Start', self)
         self.startAction.setStatusTip('Start')
         self.startAction.triggered.connect(self.start)
 
-        stopAction = QAction(QIcon('stop.png'), 'Stop', self)
+        stopAction = QAction(QIcon(':/icons/stop.png'), 'Stop', self)
         stopAction.setStatusTip('Stop')
         stopAction.triggered.connect(self.stop)
 
@@ -124,12 +127,12 @@ class Main(QMainWindow):
         if not self.started:
             self.showQuestion(self.questions.curr())
             self.started = True
-            self.startAction.setIcon(QIcon('pause.png'))
+            self.startAction.setIcon(QIcon(':/icons/pause.png'))
             self.startAction.setStatusTip('Pause')
         else:
             self.started = False
             self.hideQuestion()
-            self.startAction.setIcon(QIcon('start.png'))
+            self.startAction.setIcon(QIcon(':/icons/start.png'))
             self.startAction.setStatusTip('Start')
 
     def settings(self):
