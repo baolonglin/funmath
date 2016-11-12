@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout, QSizePolicy
+from PyQt5.QtGui import QFont, QFontMetrics
 from QuestionGenerator import Operator
 
 class QuestionWidget(QWidget):
@@ -7,44 +7,90 @@ class QuestionWidget(QWidget):
         super().__init__(parent)
         self.question = question
 
+        self.parseQuestion()
         self.initUI()
 
-    def getNumWidget(self, n):
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        f = self.font()
+        cr = self.contentsRect()
 
-        if n in Operator:
-            if n == Operator.plus:
-                text = self.tr('+')
-            elif n == Operator.minus:
-                text = self.tr('-')
-            elif n == Operator.multiply:
-                text = self.tr('*')
-            elif n == Operator.divide:
-                text = self.tr('/')
+        dw = event.size().width() - event.oldSize().width()  # width change
+        dh = event.size().height() - event.oldSize().height()  # height change
+        fs = max(f.pixelSize(), 1)
+        while True:
+            f.setPixelSize(fs)
+            text = self.questionAnswerStr()
+            br = QFontMetrics(f).boundingRect(text)  # question and answer string
+            if dw >= 0 and dh >= 0:
+                if br.height() <= cr.height() and br.width() <= cr.width():
+                    fs += 1
+                else:
+                    f.setPixelSize(max(fs - 1, 1))  # backtrack
+                    break
             else:
-                text = str(n)
-        else:
-            text = str(n)
+                if br.height() > cr.height() or br.width() > cr.width():
+                    fs -= 1
+                else:
+                    break
+
+            if fs < 1:
+                break
+        self.setFont(f)
+
+    def parseQuestion(self):
+        questionStrForEval = ''
+        self.questionStrShow = ''
+        for item in self.question[0]:
+            questionStrForEval += str(item)
+            if item in Operator:
+                self.questionStrShow += self.opEnumToStr(item)
+            else:
+                self.questionStrShow += str(item)
+        self.correctAnswer = eval(questionStrForEval)
+
+    def questionAnswerStr(self):
+        return self.questionStrShow + self.tr('=') + str(self.correctAnswer)
+
+    def opEnumToStr(self, op):
+        if op.value == 1:
+            return self.tr("+")
+        elif op.value == 2:
+            return self.tr('-')
+        elif op.value == 3:
+            return self.tr('*')
+        elif op.valuse == 4:
+            return self.tr('/')
+
+    def getNumWidget(self, text):
         label = QLabel(text)
-        font = QFont("Times", 14, QFont.Bold)
-        label.setFont(font)
+        label.setFont(self.font())
         return label
 
     def getInputWidget(self, n):
         self.answerEdit = QLineEdit()
+        self.answerEdit.setInputMask('#' * len(str(self.correctAnswer)))
         if n != -1:
             self.answerEdit.setText(str(n))
-        font = QFont("Times", 14, QFont.Bold)
-        self.answerEdit.setFont(font)
+        self.answerEdit.setFont(self.font())
         self.setFocusProxy(self.answerEdit)
         return self.answerEdit
 
     def initUI(self):
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored))
+
         q = self.question[0]
         a = self.question[1]
         grid = QHBoxLayout()
+
+        qstr = ""
         for e in q:
-            grid.addWidget(self.getNumWidget(e))
-        grid.addWidget(QLabel('='))
+            if e in Operator:
+                qstr += self.opEnumToStr(e)
+            else:
+                qstr += str(e)
+        qstr += self.tr('=')
+        grid.addWidget(self.getNumWidget(qstr))
         grid.addWidget(self.getInputWidget(a))
         self.setLayout(grid)
 

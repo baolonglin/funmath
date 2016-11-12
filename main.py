@@ -6,7 +6,7 @@ from locale import getdefaultlocale
 from PyQt5.QtWidgets import QApplication, QMessageBox, QDesktopWidget, \
     QMainWindow, QAction, qApp, QVBoxLayout, QHBoxLayout, QWidget, QPushButton
 from PyQt5.QtCore import Qt, pyqtSignal, QObject, QTranslator
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QColor
 
 from SettingsDialog import SettingsDialog
 from Settings import Settings
@@ -81,7 +81,7 @@ class Main(QMainWindow):
             self.questionWidget = QuestionWidget(self, question)
             layout = QVBoxLayout()
             layout.addStretch(1)
-            layout.addWidget(self.questionWidget)
+            layout.addWidget(self.questionWidget, 1)
             layout.addStretch(1)
             cmdLayout = QHBoxLayout()
             prevButton = QPushButton("<<")
@@ -95,6 +95,10 @@ class Main(QMainWindow):
             cmdLayout.addWidget(nextButton)
             layout.addLayout(cmdLayout)
             centralWidget = QWidget()
+            centralWidget.setAutoFillBackground(True)
+            p = centralWidget.palette()
+            p.setColor(centralWidget.backgroundRole(), QColor(219, 238, 221))
+            centralWidget.setPalette(p)
             centralWidget.setLayout(layout)
             self.setCentralWidget(centralWidget)
             self.questionWidget.setFocus()
